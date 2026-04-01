@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 
 
-CONFIG_PATH =  r'configs/tall3D_SS_BOT_BEPU_noStageRun.yaml'
+CONFIG_PATH =  r'/media/yw/Research/MIT-TP/test_case_tall3D/files/config/tall3D_SS_BOT_BEPU_noStageRun.yaml'
 SAMPLE_LIST = range(1)
 INTERACTIVE_MODE = False
 
