@@ -1,0 +1,37 @@
+path:
+  root: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D'
+  base_sim_filepath: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/sim/tall3D_bot_RANS_RKE_2h_IC_v2.sim'
+  ils_filepath:  '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/model_error/ils.csv'
+  de_folderpath: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/discretization_error/ls_BOT/U_1'
+  bepu_input_path: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/input_error/BEPU_bot_lhs_samples_r20v4_2sigma.csv'
+  py_filepath: '/media/yw/Research/MIT-TP/scripts/driver/src/grf_remote.py'
+  exe_filepath: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/py_exe.sh'
+
+job:
+  slurm_filepath: '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/slurm/uq_BEPU_stageRun_Local.sh'
+  partition: None
+  time_for_nodes: None
+  n_nodes: None
+  n_cores: None
+  n_cores_for_computing: 6
+  interactive_mode: False
+  rerun: True
+
+java:
+  java_filepath: ['/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/java/run_uqss_Tall3D_IE.java', '/media/yw/Research/MIT-TP/scripts/test_case_tall3D/files/java/run_uqss_Tall3D_GRF.java']
+  java_keywords: {
+    "JAVANAME": "run_uq_ss",
+    "SS_ITERATIONS": "1000",
+    "MAX_ITERATIONS": "1000",
+  }
+
+rf:
+  target_quantity: Integral length scale
+  k_l0: 1.22
+  s_2: 1.24
+  n_trunc: 20
+  n_modes: 1809
+  save_every_rf: False
+  model_error_on: True
+  disc_error_on: True
+

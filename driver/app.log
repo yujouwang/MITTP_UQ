@@ -1,0 +1,129 @@
+2026-04-01 11:43:49 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:43:49 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:43:49 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:43:49 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:43:49 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:43:49 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:44:11 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:44:11 - src.uq - INFO - Preparing exe file
+2026-04-01 11:44:11 - src.uq - INFO - Preparing java file
+2026-04-01 11:44:11 - src.uq - INFO - Preparing java files
+2026-04-01 11:44:11 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:44:11 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:44:11 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:45:08 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:45:08 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:45:08 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:45:08 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:45:08 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:45:08 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:45:30 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:45:30 - src.uq - INFO - Preparing exe file
+2026-04-01 11:45:30 - src.uq - INFO - Preparing java file
+2026-04-01 11:45:30 - src.uq - INFO - Preparing java files
+2026-04-01 11:45:30 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:45:30 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:45:30 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:45:30 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 11:45:31 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:46:23 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:46:23 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:46:23 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:46:23 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:46:23 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:46:23 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:46:45 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:46:45 - src.uq - INFO - Preparing exe file
+2026-04-01 11:46:45 - src.uq - INFO - Preparing java file
+2026-04-01 11:46:45 - src.uq - INFO - Preparing java files
+2026-04-01 11:46:45 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:46:45 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:46:45 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:46:45 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 11:46:45 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:48:15 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:48:15 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:48:15 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:48:15 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:48:15 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:48:15 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:48:36 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:48:36 - src.uq - INFO - Preparing exe file
+2026-04-01 11:48:36 - src.uq - INFO - Preparing java file
+2026-04-01 11:48:36 - src.uq - INFO - Preparing java files
+2026-04-01 11:48:36 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:48:36 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:48:36 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:48:36 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:48:36 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 11:54:46 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:54:46 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:54:46 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:54:46 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:54:46 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:54:46 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:55:07 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:55:07 - src.uq - INFO - Preparing exe file
+2026-04-01 11:55:07 - src.uq - INFO - Preparing java file
+2026-04-01 11:55:07 - src.uq - INFO - Preparing java files
+2026-04-01 11:55:07 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:55:07 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:55:07 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:55:07 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:55:07 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 11:56:43 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:56:43 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:56:43 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:56:43 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:56:43 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:56:43 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:57:04 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:57:05 - src.uq - INFO - Preparing exe file
+2026-04-01 11:57:05 - src.uq - INFO - Preparing java file
+2026-04-01 11:57:05 - src.uq - INFO - Preparing java files
+2026-04-01 11:57:05 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:57:05 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:57:05 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:57:05 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:57:05 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 11:57:57 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 11:57:57 - src.uq - INFO - Setting up the working directory
+2026-04-01 11:57:57 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 11:57:57 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 11:57:57 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 11:57:57 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 11:58:18 - src.uq - INFO - Preparing ils file)
+2026-04-01 11:58:18 - src.uq - INFO - Preparing exe file
+2026-04-01 11:58:18 - src.uq - INFO - Preparing java file
+2026-04-01 11:58:18 - src.uq - INFO - Preparing java files
+2026-04-01 11:58:18 - src.uq - INFO - Preparing slurm file
+2026-04-01 11:58:18 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 11:58:18 - src.uq - INFO - Running sample 0 - 
+2026-04-01 11:58:18 - src.uq - INFO - Preparing rf.csv file
+2026-04-01 11:58:18 - root - INFO - Launching rf generation script: /media/yw/Research/MIT-TP/scripts/test_case_tall3D/0/grf.py
+2026-04-01 12:00:16 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 12:00:16 - src.uq - INFO - Setting up the working directory
+2026-04-01 12:00:16 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 12:00:16 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 12:00:16 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 12:00:16 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 12:00:37 - src.uq - INFO - Preparing ils file)
+2026-04-01 12:00:37 - src.uq - INFO - Preparing exe file
+2026-04-01 12:00:37 - src.uq - INFO - Preparing java file
+2026-04-01 12:00:37 - src.uq - INFO - Preparing java files
+2026-04-01 12:00:37 - src.uq - INFO - Preparing slurm file
+2026-04-01 12:00:37 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 12:00:37 - src.uq - INFO - Running sample 0 - 
+2026-04-01 12:01:31 - src.job_manager - INFO - Initializing LocalManager
+2026-04-01 12:01:31 - src.uq - INFO - Setting up the working directory
+2026-04-01 12:01:31 - src.uq - INFO - Copying the config file to the root folder
+2026-04-01 12:01:31 - src.uq - INFO - Initiating sample folder for 0 - 
+2026-04-01 12:01:31 - src.uq - INFO - Preparing sample files for 0 - 
+2026-04-01 12:01:31 - src.uq - INFO - Preparing sim file: from src to destination folder with the same name (without @)
+2026-04-01 12:01:52 - src.uq - INFO - Preparing ils file)
+2026-04-01 12:01:52 - src.uq - INFO - Preparing exe file
+2026-04-01 12:01:52 - src.uq - INFO - Preparing java file
+2026-04-01 12:01:52 - src.uq - INFO - Preparing java files
+2026-04-01 12:01:52 - src.uq - INFO - Preparing slurm file
+2026-04-01 12:01:52 - src.uq - INFO - Preparing rf files remotely
+2026-04-01 12:01:52 - src.uq - INFO - Running sample 0 - 
