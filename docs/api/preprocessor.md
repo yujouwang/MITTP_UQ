@@ -50,7 +50,7 @@ Computes Richardson-extrapolation-based discretization error bounds at every spa
 ### Usage
 
 ```bash
-python preprocessor/numericalleastSquare/driver.py path/to/config.yaml
+python preprocessor/numericalleastSquare/processor_leastSquare.py path/to/config.yaml
 ```
 
 ### What it does

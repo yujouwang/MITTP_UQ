@@ -24,7 +24,7 @@ scripts/
 │   ├── inputlhsGen/
 │   │   └── processor_BEPU_sampling.py   # LHS sample generation
 │   └── numericalleastSquare/
-│       ├── driver.py                  # Entry point: compute LS fields
+│       ├── processor_leastSquare.py   # Entry point: compute LS fields
 │       └── src/
 │           └── ls.py                  # FieldLS and LeastSquare classes
 ├── environment.yml
@@ -50,7 +50,7 @@ The documentation could be found in [processor_BEPU_sampling.py](api/processor_B
 ### 2. Compute Least-Squares Error Fields
 
 ```bash
-python preprocessor/numericalleastSquare/driver.py config/ls_config.yaml
+python preprocessor/numericalleastSquare/processor_leastSquare.py config/ls_config.yaml
 ```
 
 Reads CFD output CSVs across multiple grid resolutions, interpolates onto a common base grid, and fits a least-squares Richardson extrapolation at each point. Outputs `ls_*.json` files (one per spatial point) and a `U.csv` bounds file.
