@@ -9,7 +9,7 @@ Generates Latin Hypercube Samples (LHS) for uncertain input parameters (e.g. mas
 ### Usage
 
 ```bash
-python preprocessor/inputlhsGen/drivers_BEPU_sampling.py path/to/config.yaml
+python preprocessor/inputlhsGen/processor_BEPU_sampling.py path/to/config.yaml
 ```
 
 ### Config format
@@ -32,7 +32,7 @@ input_error:
 
 The output CSV has one row per sample and columns: `SampleID`, all input parameters, `DEVAR`, `XI_0` ... `XI_{N_modes-1}`.
 
-::: preprocessor.inputlhsGen.drivers_BEPU_sampling
+::: preprocessor.inputlhsGen.processor_BEPU_sampling
     options:
       members:
         - lhs_gaussian_independent

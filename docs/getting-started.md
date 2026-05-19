@@ -22,7 +22,7 @@ scripts/
 │       └── config.py         # YAML config reader
 ├── preprocessor/
 │   ├── inputlhsGen/
-│   │   └── drivers_BEPU_sampling.py   # LHS sample generation
+│   │   └── processor_BEPU_sampling.py   # LHS sample generation
 │   └── numericalleastSquare/
 │       ├── driver.py                  # Entry point: compute LS fields
 │       └── src/
@@ -36,8 +36,18 @@ scripts/
 ## Step-by-Step Workflow
 Each run is driven by a YAML config file. 
 
-### 1. Generate LHS Samples for input parameters
-Create a yaml file for input 
+### 1. Generate LHS Samples for input error
+To generate the random samples using Latin-hypercube approach, run the following command:
+```bash
+cd preprocessor/inputlhsGen
+python processor_BEPU_sampling.py path/to/input/config.yaml
+
+```
+The driver `processor_BEPU_sampling.py` generates LHS samples for all uncertain input parameters.
+
+
+Create a yaml file for input error. The template is at `Templates/input_error_config.yaml`. 
+save the config to the working directory. 
 
 ```yaml
 path:
@@ -55,11 +65,6 @@ model_error:
   N_modes: 20
 ```
 
-Run  the code
-```bash
-cd preprocessor/inputlhsGen
-python drivers_BEPU_sampling.py path/to/input/config.yaml
-```
 
 The code output a csv file with columns
 - `SampleID`
