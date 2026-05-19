@@ -1,5 +1,6 @@
 import shutil
 import os
+import argparse
 from pathlib import Path
 import logging
 # Configure the logger
@@ -16,7 +17,17 @@ from src.config import read_config_from_yaml
 from src.ls import GridInfo, FieldLS
 
 
-CONFIG_PATH = './config/tall3D_ss_BOT.yaml'
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Compute least-square fields using a YAML config file."
+    )
+    parser.add_argument(
+        "config_path",
+        type=Path,
+        help="Path to the YAML config file, e.g. ./config/tall3D_ss_BOT.yaml",
+    )
+    return parser.parse_args()
+
 
 
 def create_ls_field(config):
@@ -44,9 +55,10 @@ def create_ls_field(config):
 
 
 if __name__ == "__main__":
+    args = parse_args()
 
     # Read the config file
-    config = read_config_from_yaml(CONFIG_PATH)
+    config = read_config_from_yaml(args.config_path)
     print(f"Config: {config}")
 
     # Create the save directory if it does not exist

@@ -7,11 +7,76 @@ import pandas as pd
 import json
 import glob
 import os 
+import re
 from tqdm import tqdm
 
 # =======================================
 #       Helper functions
 # =======================================
+def _normalize_coordinate_column(column_name):
+    column_name = str(column_name).strip().lower()
+    column_name = re.sub(r"\s*\([^)]*\)\s*", "", column_name)
+    return column_name.strip()
+
+def get_coordinate_columns(df):
+    """
+    Find coordinate columns such as X (m), X (in), X, x, y, z.
+
+    Unit labels are ignored here. The coordinate values are used as-is, so input
+    files should still be in consistent units with each other.
+    """
+    coord_columns = {}
+    for column in df.columns:
+        normalized = _normalize_coordinate_column(column)
+        if normalized in {'x', 'y', 'z'} and normalized not in coord_columns:
+            coord_columns[normalized] = column
+
+    missing = [axis for axis in ('x', 'y', 'z') if axis not in coord_columns]
+    if missing:
+        raise KeyError(
+            f"Could not find coordinate column(s) {missing}. "
+            f"Expected names like X (m), X (in), X, x, y, z. "
+            f"Available columns: {list(df.columns)}"
+        )
+
+    return [coord_columns[axis] for axis in ('x', 'y', 'z')]
+
+def get_required_field_column(df, field_name, field_file_path):
+    if field_name not in df.columns:
+        raise KeyError(
+            f"'{field_name}' is not found in the csv file {field_file_path}"
+        )
+    return df[field_name]
+
+def validate_matching_coordinates(points, base_points, grid_info, field_file_path, base_grid_info):
+    if points.shape != base_points.shape:
+        raise ValueError(
+            f"Grid '{grid_info.name}' in csv file {field_file_path} has coordinate shape "
+            f"{points.shape}, but the base grid '{base_grid_info.name}' has coordinate shape "
+            f"{base_points.shape}. Row-by-row collection requires matching sorted coordinates."
+        )
+
+    matches = np.isclose(points, base_points)
+    if matches.all():
+        return
+
+    mismatch_rows, mismatch_axes = np.where(~matches)
+    first_row = mismatch_rows[0]
+    axis_names = ['X', 'Y', 'Z']
+    first_axis = axis_names[mismatch_axes[0]]
+    max_difference = np.max(np.abs(points - base_points))
+
+    raise ValueError(
+        f"Grid '{grid_info.name}' in csv file {field_file_path} has coordinate values "
+        f"different from the base grid '{base_grid_info.name}'. "
+        f"{len(mismatch_rows)} coordinate value(s) differ after sorting. "
+        f"First mismatch: row {first_row}, axis {first_axis}, "
+        f"base value {base_points[first_row, mismatch_axes[0]]}, "
+        f"grid value {points[first_row, mismatch_axes[0]]}. "
+        f"Maximum absolute coordinate difference: {max_difference}. "
+        "Row-by-row collection requires all grids to have the same sorted coordinates."
+    )
+
 def mon_range(p):
     if p >= 0.5 and p <=2:
         return True
@@ -32,7 +97,21 @@ def compute_2Dh(N, V):
     h= (V/N)**(1/2)
     return h
 
+def get_ls_result_path(save_path, i):
+    return Path(save_path) / f'ls_{i}.json'
+
 def compute_ls(i, phi, h, save_path):
+    save_to = get_ls_result_path(save_path, i)
+    if save_to.exists():
+        print(f'Skipping {i}: {save_to} already exists')
+        return
+
+    if not np.all(np.isfinite(phi)):
+        raise ValueError(
+            f"Point {i} has non-finite field values {phi}. "
+            "least_squares cannot run with NaN or inf values."
+        )
+
     print(f'computing {i}')
     ls = LeastSquare(i, phi, h)
     ls.init()
@@ -397,7 +476,7 @@ class LeastSquare:
 
 
         # writhe the dictionaly to a json file
-        save_to = save_to_folder / f'ls_{self.i}.json'
+        save_to = get_ls_result_path(save_to_folder, self.i)
         if Path(save_to).exists() is False:
             # create 
             with open(save_to, 'w') as f:
@@ -480,8 +559,37 @@ class FieldLS:
         self._data = None
         self._field_ls = None
         self.coord = {'x': None, 'y': None, 'z': None}
+        self.coord_column_names = {'x': 'X', 'y': 'Y', 'z': 'Z'}
         self._bounds = None
         self._phi = None
+
+    def _validate_collected_data(self, data):
+        invalid_mask = ~np.isfinite(data)
+        if not invalid_mask.any():
+            return
+
+        invalid_rows, invalid_cols = np.where(invalid_mask)
+        max_samples = 10
+        samples = []
+        for row, col in zip(invalid_rows[:max_samples], invalid_cols[:max_samples]):
+            samples.append(
+                f"point {row}, grid '{self.grid_info_list[col].name}', value {data[row, col]}"
+            )
+
+        counts_by_grid = []
+        for grid_id, grid_info in enumerate(self.grid_info_list):
+            count = int(np.sum(invalid_mask[:, grid_id]))
+            if count > 0:
+                counts_by_grid.append(f"{grid_info.name}: {count}")
+
+        raise ValueError(
+            f"Non-finite values were found for field '{self.field_name}' after interpolation. "
+            "least_squares cannot run with NaN or inf values. "
+            f"Invalid value counts by grid: {', '.join(counts_by_grid)}. "
+            f"Sample invalid entries: {'; '.join(samples)}. "
+            "For linear interpolation, this often means some base-grid points are outside "
+            "another grid's convex hull, or the CSV contains non-finite field values."
+        )
     
     @property
     def data(self):
@@ -508,31 +616,46 @@ class FieldLS:
         grid_info = self.grid_info_list[0]
         field_file_path = grid_info.field_file_path
         df_base = pd.read_csv(field_file_path)
-        df_base.sort_values(by=['X (m)', 'Y (m)', 'Z (m)'], inplace=True, ignore_index=True)
+        coord_columns = get_coordinate_columns(df_base)
+        df_base.sort_values(by=coord_columns, inplace=True, ignore_index=True)
         print(f'Collecting coordinates based on {grid_info.name}')
         print(f'Base grid number: {len(df_base)}')
-        self.coord['x'] = df_base['X (m)'].values
-        self.coord['y'] = df_base['Y (m)'].values
-        self.coord['z'] = df_base['Z (m)'].values
+        self.coord['x'] = df_base[coord_columns[0]].values
+        self.coord['y'] = df_base[coord_columns[1]].values
+        self.coord['z'] = df_base[coord_columns[2]].values
+        self.coord_column_names['x'] = coord_columns[0]
+        self.coord_column_names['y'] = coord_columns[1]
+        self.coord_column_names['z'] = coord_columns[2]
 
 
-        # Get data  by interpolation
-        xi = df_base[['X (m)', 'Y (m)', 'Z (m)']].values  # interpolation point
+        # Get data row-by-row after sorting every grid by its coordinates.
+        base_points = df_base[coord_columns].values
         data = []
         for grid_info in self.grid_info_list:
             field_file_path = grid_info.field_file_path
             df = pd.read_csv(field_file_path)
             print(f'{grid_info.name} grid number: {len(df)}')
 
-            df.sort_values(by=['X (m)', 'Y (m)', 'Z (m)'], inplace=True, ignore_index=True)
-            values = df[self.field_name]
-            points = df[['X (m)', 'Y (m)', 'Z (m)']].values
-            interp_values = griddata(points, values, xi, method='linear')
-            data.append(interp_values)
+            coord_columns = get_coordinate_columns(df)
+            df.sort_values(by=coord_columns, inplace=True, ignore_index=True)
+            values = get_required_field_column(df, self.field_name, field_file_path)
+            points = df[coord_columns].values
+
+            validate_matching_coordinates(
+                points,
+                base_points,
+                grid_info,
+                field_file_path,
+                self.grid_info_list[0],
+            )
+
+            data.append(values.values)
 
 
         data = np.array(data).T
+        self._validate_collected_data(data)
         self._data = data
+        self.N_points = len(data)
         print('Data collected')
 
         # Collect the coordinates
@@ -545,16 +668,27 @@ class FieldLS:
         save_folder = self.save_ls_to
         if points_idx is None:
             points_idx = range(self.N_points)
+        points_idx = list(points_idx)
+        pending_points_idx = [
+            i for i in points_idx
+            if not get_ls_result_path(save_folder, i).exists()
+        ]
+        skipped_count = len(points_idx) - len(pending_points_idx)
+        if skipped_count > 0:
+            print(f'Skipping {skipped_count} existing ls_*.json file(s)')
+        if len(pending_points_idx) == 0:
+            print('All requested ls_*.json files already exist')
+            return
 
         if parallel:
             import multiprocessing as mp
             n_proc = mp.cpu_count()
             print(f'Number of cpu: {n_proc}')
-            inputs = [(i, self._data[i, :], hs, save_folder) for i in points_idx]
+            inputs = [(i, self._data[i, :], hs, save_folder) for i in pending_points_idx]
             pool = mp.Pool(processes=n_proc)
             pool.starmap(compute_ls, inputs)
         else:
-            for i in range(self.N_points):
+            for i in pending_points_idx:
                 compute_ls(i, self._data[i, :], hs, save_folder)
         return
     
@@ -601,9 +735,9 @@ class FieldLS:
         save_to = save_to / f'U.csv'
 
         df = pd.DataFrame(
-            {'X':self.coord['x'], 
-            'Y':self.coord['y'],
-            'Z':self.coord['z'], 
+            {self.coord_column_names['x']:self.coord['x'], 
+            self.coord_column_names['y']:self.coord['y'],
+            self.coord_column_names['z']:self.coord['z'], 
             'LB':bounds[:, 0],
             'UB':bounds[:, 1],
             }
