@@ -1,4 +1,5 @@
 import json
+import csv
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -8,6 +9,30 @@ from scipy.spatial import distance_matrix
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def _normalized_column_name(column):
+    return column.strip().lower()
+
+
+def find_coordinate_columns(df):
+    coord_columns = {}
+    for axis in ('x', 'y', 'z'):
+        matches = [
+            column for column in df.columns
+            if _normalized_column_name(column) == axis
+            or _normalized_column_name(column).startswith(f'{axis} (')
+        ]
+        if not matches:
+            raise KeyError(
+                f"Could not find coordinate column for '{axis.upper()}'. "
+                f"Expected labels like '{axis.upper()} (m)', "
+                f"'{axis.upper()} (in)', '{axis.upper()}', or '{axis}'. "
+                f"Available columns: {list(df.columns)}"
+            )
+        coord_columns[axis] = matches[0]
+    return [coord_columns[axis] for axis in ('x', 'y', 'z')]
+
 
 class MultiplierBepu:
     def __init__(self, target_quantity, k_l0, s_2, ils_filepath, de_filepath, bepu_input_dict, save_to, model_error_on, disc_error_on):
@@ -32,7 +57,7 @@ class MultiplierBepu:
         self.ils_me = None
         self.ils_de = None
         self.ils_ie = None
-        self.ils_base, self.coord = self.init_ils()
+        self.ils_base, self.coord, self.coord_columns = self.init_ils()
         self.model_error_on = model_error_on
         self.disc_error_on = disc_error_on
 
@@ -40,10 +65,11 @@ class MultiplierBepu:
         # Read data
         logger.debug('Get ils: Reading data')
         ils_df = pd.read_csv(self.ils_filepath)
-        ils_df.sort_values(by=['X (m)', 'Y (m)', 'Z (m)'], inplace=True, ignore_index=True)
-        coord = ils_df[['X (m)', 'Y (m)', 'Z (m)']].to_numpy()
+        coord_columns = find_coordinate_columns(ils_df)
+        ils_df.sort_values(by=coord_columns, inplace=True, ignore_index=True)
+        coord = ils_df[coord_columns].to_numpy()
         ils_base = ils_df[self.target_quantity].to_numpy()
-        return ils_base, coord
+        return ils_base, coord, coord_columns
 
     def compute_ils_me(self):
         """
@@ -69,7 +95,8 @@ class MultiplierBepu:
             # ub = bounds[:, 1]
 
             df = pd.read_csv(self.de_filepath)
-            df.sort_values(by=['X', 'Y', 'Z'], inplace=True, ignore_index=True)
+            coord_columns = find_coordinate_columns(df)
+            df.sort_values(by=coord_columns, inplace=True, ignore_index=True)
             lb = df['LB'].values
             ub = df['UB'].values
 
@@ -151,9 +178,8 @@ class MultiplierBepu:
         np.savetxt(self.filepaths['D'], D, delimiter=",")
 
         # df 
-        df = pd.DataFrame(np.concatenate([coord, rf_lognormal], axis=1), columns=['X', 'Y', 'Z', 'phi'])
+        df = pd.DataFrame(np.concatenate([coord, rf_lognormal], axis=1), columns=[*self.coord_columns, 'phi'])
         return df
-
 
     def df(self, N_trunc):
         # read data
@@ -167,6 +193,13 @@ class MultiplierBepu:
     
     def get_sample(self, N_trunc, sample_id):
         return self.df(N_trunc).iloc[:, sample_id+4].to_numpy()
+
+
+def write_rf_csv(df, filepath):
+    with open(filepath, 'w', newline='') as f:
+        header = [f'"{column}"' if column in df.columns[:3] else column for column in df.columns]
+        f.write(','.join(header) + '\n')
+        df.to_csv(f, index=False, header=False, quoting=csv.QUOTE_MINIMAL)
 
 
 def read_config(config_path):
@@ -208,4 +241,4 @@ if __name__ == "__main__":
     df = m.get_kle(N_truncate=n_trunc)
 
     # Dump the phi as rf.csv
-    df.to_csv('rf.csv', index=False)
+    write_rf_csv(df, 'rf.csv')
