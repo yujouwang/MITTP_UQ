@@ -1,11 +1,15 @@
-"""This module performs Latin Hypercube Sampling (LHS) to generate samples for uncertain parameters"""
+"""This module performs Latin Hypercube Sampling (LHS) to generate samples for uncertain parameters."""
+
+import argparse
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.stats import qmc
 from scipy.stats import norm
+import yaml
 
-from pathlib import Path
+
+DEFAULT_N_SAMPLES = 59
 
 
 def lhs_gaussian_independent(mu_dict, sigma_dict, N, seed=None):
@@ -36,64 +40,63 @@ def lhs_gaussian_independent(mu_dict, sigma_dict, N, seed=None):
     return X
 
 
-# =========================================================
-#               Data 
-# =========================================================
-# BOT
-sigma_bot = {
-    'MASSFLOW': 0.02/2, 
-    'TIN': 2/2, 
-    'POWERIN':202.64/2,
-    'RHO_LBE': 85.8/2,
-    'Cp_LBE': 8.274/2,
-    'K_LBE': 1.101/2,
-    'MU_LBE': 0.00003592/2,
-}
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate BEPU LHS samples using a YAML config file."
+    )
+    parser.add_argument(
+        "config_path",
+        type=Path,
+        help="Path to the YAML config file, e.g. files/input_error/input_error_config.yaml",
+    )
+    return parser.parse_args()
 
-mu_bot = {
-    'MASSFLOW':1.3096,
-    'TIN': 508.56,
-    'POWERIN': 4052.83,
-    'RHO_LBE': 10725.0,
-    'Cp_LBE': 118.2,
-    'K_LBE': 7.34,
-    'MU_LBE': 0.000449
-}
 
-def main(mu, sigma):
-    """ 
-    input: mu and sigma are dictionaries look like this: 
+def read_config_from_yaml(config_path):
+    with open(config_path, "r") as file:
+        return yaml.safe_load(file)
 
-    sigma_eot = {
-        'MASSFLOW': 0.05, 
-        'TIN': 2, 
-        'POWERIN':202.64,
-        'RHO_LBE': 85.8,
-        'Cp_LBE': 8.274,
-        'K_LBE': 1.101,
-        'MU_LBE': 0.00003592,
-    }
 
-    mu_eot = {
-        'MASSFLOW': 0.2644,
-        'TIN': 474.95,
-        'POWERIN': 4052.83,
-        # 'RHO_LBE': (10725.0, -1.22),
-        'RHO_LBE': 10725.0,
-        # 'Cp_LBE': (118.2, 0.005934, 7183000.0),
-        'Cp_LBE': 118.2,
-        # 'K_LBE': (7.34, 0.0095),
-        'K_LBE': 7.34,
-        'MU_LBE': 0.000449
-    }
+def parse_input_error(config):
+    input_error = config.get("input_error")
+    if not isinstance(input_error, dict) or not input_error:
+        raise ValueError("Config must define at least one variable under 'input_error'.")
 
-    """
+    mu = {}
+    sigma = {}
+    for name, values in input_error.items():
+        if not isinstance(values, dict):
+            raise ValueError(f"input_error.{name} must contain 'mean' and 'std'.")
+        if "mean" not in values or "std" not in values:
+            raise ValueError(f"input_error.{name} must contain both 'mean' and 'std'.")
+
+        mu[name] = values["mean"]
+        sigma[name] = values["std"]
+
+    return mu, sigma
+
+
+def get_save_path(config):
+    try:
+        return Path(config["path"]["save_to"])
+    except KeyError as exc:
+        raise ValueError("Config must define path.save_to.") from exc
+
+
+def get_n_modes(config):
+    try:
+        return int(config["model_error"]["N_modes"])
+    except KeyError as exc:
+        raise ValueError("Config must define model_error.N_modes.") from exc
+
+
+def main(mu, sigma, n_modes, save_to):
     # Add input variables: discretization error rv
     mu[f'DEVAR'] = 0.0
     sigma[f'DEVAR'] = 1.0
 
     # Add input variables: mode coefficients
-    for mode in range(N_modes):
+    for mode in range(n_modes):
         mu[f'XI_{mode}'] = 0.0
         sigma[f'XI_{mode}'] = 1.0
     
@@ -103,7 +106,7 @@ def main(mu, sigma):
     # get samples 
     print('Generating LHS samples...')
     print(len(list(mu.values())))
-    X = lhs_gaussian_independent(mu_dict=mu, sigma_dict=sigma, N=59, seed=42)
+    X = lhs_gaussian_independent(mu_dict=mu, sigma_dict=sigma, N=DEFAULT_N_SAMPLES, seed=42)
 
 
     # create DataFrame
@@ -113,22 +116,21 @@ def main(mu, sigma):
     df.insert(0, 'SampleID', range(len(df)))
 
 
+    save_to.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(save_to, index=False)
     print(f'Saved LHS samples to {save_to}')
     return
 
 
 if __name__ == "__main__":
-    # save to CSV
-    save_to = Path('../../../files/input_error/BEPU_bot_lhs_samples_r20v4_2sigma.csv')
-
-    # Specify the modes 
-    N_modes = 20
-    mu = mu_bot.copy()
-    sigma = sigma_bot.copy()
+    args = parse_args()
+    config = read_config_from_yaml(args.config_path)
+    save_to = get_save_path(config)
+    n_modes = get_n_modes(config)
+    mu, sigma = parse_input_error(config)
 
     if save_to.exists():
         raise FileExistsError(f'{save_to} already exists! Delete it first to proceed.')
 
     else:
-        main(mu, sigma)
+        main(mu, sigma, n_modes, save_to)
