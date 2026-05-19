@@ -34,7 +34,7 @@ scripts/
 
 
 ## Step-by-Step Workflow
-Each run is driven by a YAML config file. 
+Each run is controlled by a YAML config file. 
 
 ### 1. Generate LHS Samples for input error
 To generate the random samples using Latin-hypercube approach, run the following command:
@@ -44,33 +44,8 @@ python processor_BEPU_sampling.py path/to/input/config.yaml
 
 ```
 The driver `processor_BEPU_sampling.py` generates LHS samples for all uncertain input parameters.
+The documentation could be found in [processor_BEPU_sampling.py](api/processor_BEPU_sampling.md).
 
-
-Create a yaml file for input error. The template is at `Templates/input_error_config.yaml`. 
-save the config to the working directory. 
-
-```yaml
-path:
-  save_to: '/path/to/file.csv'
-
-input_error:
-  VAR1:
-    mean: 1
-    std: 0.02
-  VAR2:
-    mean: 300
-    std: 10
-
-model_error:
-  N_modes: 20
-```
-
-
-The code output a csv file with columns
-- `SampleID`
-- `VAR1`...`VARn`: 
-- `VAR2`
-Outputs a CSV of LHS samples (one row per sample, one column per uncertain parameter). The sample count defaults to 59 and can be changed via `DEFAULT_N_SAMPLES` in the script.
 
 ### 2. Compute Least-Squares Error Fields
 
