@@ -22,10 +22,6 @@ logging.basicConfig(
 )
 
 
-SAMPLE_LIST = range(1)
-INTERACTIVE_MODE = False
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python driver_uq.py path/to/config.yaml")
