@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import logging
+import sys
 import time
 
 from src.uq import UqDriverStageRun
@@ -21,13 +22,16 @@ logging.basicConfig(
 )
 
 
-CONFIG_PATH =  r'/mnt/research_3TB/MIT-TP/Elbow-Demo/files/config/elbow_BEPU.yaml'
 SAMPLE_LIST = range(1)
 INTERACTIVE_MODE = False
 
 
 if __name__ == "__main__":
-    
+    if len(sys.argv) != 2:
+        print("Usage: python driver_uq.py path/to/config.yaml")
+        sys.exit(1)
+    CONFIG_PATH = sys.argv[1]
+
     config = read_config_from_yaml(CONFIG_PATH)
     path_config = {
         'root':config['path']['root'],
