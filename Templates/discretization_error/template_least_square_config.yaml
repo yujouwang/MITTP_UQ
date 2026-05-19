@@ -1,0 +1,39 @@
+paths:
+  root:  '/path/to/root'
+
+ls:
+  field_name: 'Integral length scale'
+  save_to:  '/path/to/saveTo'
+
+grids:
+  grid_1:
+    name: 'grid1'
+    dir: '/path/to/csv'
+    N: 2094751
+    V: 0.01398  
+    field_file_name: 'ils.csv'
+
+  grid_2:
+    name: 'grid2'
+    dir: '/path/to/csvh'
+    N: 456351
+    V: 0.01398  
+    field_file_name: 'ils.csv'
+
+  grid_3:
+    name: 'grid3'
+    dir: '/path/to/csv'
+    N: 163257
+    V: 0.01398  
+    field_file_name: 'ils.csv'
+
+  grid_4:
+    name: 'grid4'
+    dir: '/path/to/csv'
+    N: 237738
+    V: 0.01398  
+    field_file_name: 'ils.csv'
+
+points: 
+  start: 0
+  end: 

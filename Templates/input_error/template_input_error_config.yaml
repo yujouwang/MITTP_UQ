@@ -1,0 +1,13 @@
+path:
+  save_to: '/path/to/csv'
+
+input_error:
+  VAR1:
+    mean: 1
+    std: 0.02
+  VAR1:
+    mean: 300
+    std: 10
+
+model_error:
+  N_modes: 20
