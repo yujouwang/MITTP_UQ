@@ -1,16 +1,27 @@
 site_name: MIT-TP Research Scripts
+site_description: BEPU uncertainty quantification tools for CFD simulations
 
 theme:
   name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - toc.integrate
 
 plugins:
   - search
   - mkdocstrings:
       handlers:
         python:
-          paths: [.]   # so it can find driver/, preprocessor/
+          paths: [.]
+          options:
+            show_source: true
+            show_root_heading: true
+            heading_level: 3
 
 nav:
   - Home: index.md
-  - Driver: api/driver.md
-  - Preprocessor: api/preprocessor.md
+  - Getting Started: getting-started.md
+  - API Reference:
+    - Driver: api/driver.md
+    - Preprocessor: api/preprocessor.md

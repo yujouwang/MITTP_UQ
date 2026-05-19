@@ -1,17 +1,20 @@
-# Welcome to MkDocs
+# MIT-TP Research Scripts
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Tools for running **Best Estimate Plus Uncertainty (BEPU)** analysis on CFD simulations (STAR-CCM+). 
 
-## Commands
+## Overview
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+The workflow has two main stages:
 
-## Project layout
+1. **Preprocessor**
+   - Input error : Latin-hypercube sampling
+   - Numerical error: Least-square estimation
+2. **Driver**
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+
+## Modules
+| Module | Purpose |
+|--------|---------|
+| [`driver/`](api/driver.md) | UQ runs: sample setup, job submission, random field generation |
+| [`preprocessor/inputlhsGen/`](api/preprocessor.md#lhs-sampling) | Latin Hypercube Sampling for uncertain input parameters |
+| [`preprocessor/numericalleastSquare/`](api/preprocessor.md#least-squares-fields) | Compute least-squares discretization error fields across grid resolutions |
