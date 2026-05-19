@@ -37,15 +37,6 @@ def prepare_ils(src, dst_folder):
     shutil.copy(src, dst_folder/f'ils.csv')
     return
 
-def prepare_exe(src, dst_folder):
-    """ Copy the exe file to the destination folder """
-    if src is None:
-        return
-    else:
-        shutil.copy(src, dst_folder/'py_exe.sh')
-        os.system(f'chmod 777 {dst_folder/"py_exe.sh"}')
-    return
-
 def parse_the_bepu_input_var_into_dict(bepu_input_file_path, sample_id):
     """ Parse the bepu input csv file and return a dictionary of input variables 
         for a given sample_id 
@@ -77,7 +68,6 @@ class UqDriver:
         # Set up path
         self.root = Path(path_config['root'])
         self.base_sim_filepath = Path(path_config['base_sim_filepath'])
-        self.exe_filepath = optional_path(path_config['exe_filepath'])
         self.bepu_input_path = Path(path_config['bepu_input_path'])
         self.ils_filepath = Path(path_config['ils_filepath'])
 
@@ -153,8 +143,6 @@ class UqDriverStageRun(UqDriver):
         logger.info('Preparing ils file)')
         prepare_ils(src = self.ils_filepath, dst_folder = case_folder)
 
-        logger.info('Preparing exe file')
-        prepare_exe( src = self.exe_filepath, dst_folder = case_folder)
 
         logger.info('Preparing java file')
         bepu_input_dict  = parse_the_bepu_input_var_into_dict(bepu_input_file_path=self.bepu_input_path, 

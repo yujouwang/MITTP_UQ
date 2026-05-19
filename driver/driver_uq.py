@@ -32,7 +32,6 @@ if __name__ == "__main__":
     path_config = {
         'root':config['path']['root'],
         'base_sim_filepath':config['path']['base_sim_filepath'],
-        'exe_filepath':config['path']['exe_filepath'],
         'bepu_input_path':config['path']['bepu_input_path'],
         'ils_filepath':config['path']['ils_filepath']
     }
