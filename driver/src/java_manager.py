@@ -17,7 +17,7 @@ class JavaUqBepuStageRun(JavaManager):
     def __init__(self, java_filepath, java_keywords):
         self.java_filepath = [Path(p) for p in java_filepath]
         for p in self.java_filepath:
-            assert p.exists()
+            assert p.exists(), f"Java file {p} does not exist"
         self.java_keywords = java_keywords
     
 

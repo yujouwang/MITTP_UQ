@@ -16,6 +16,12 @@ from src.rf_manager import RfManagerBepuRemote
 #       Helper Functions
 # ======================================================================
 
+def optional_path(path_value):
+    """Convert optional YAML path values into Path or None."""
+    if path_value in (None, False, ''):
+        return None
+    return Path(path_value)
+
 def prepare_sim(src, dst_folder):
     """ Copy the sim file to the destination folder """
 
@@ -33,8 +39,11 @@ def prepare_ils(src, dst_folder):
 
 def prepare_exe(src, dst_folder):
     """ Copy the exe file to the destination folder """
-    shutil.copy(src, dst_folder/'py_exe.sh')
-    os.system(f'chmod 777 {dst_folder/"py_exe.sh"}')
+    if src is None:
+        return
+    else:
+        shutil.copy(src, dst_folder/'py_exe.sh')
+        os.system(f'chmod 777 {dst_folder/"py_exe.sh"}')
     return
 
 def parse_the_bepu_input_var_into_dict(bepu_input_file_path, sample_id):
@@ -68,7 +77,7 @@ class UqDriver:
         # Set up path
         self.root = Path(path_config['root'])
         self.base_sim_filepath = Path(path_config['base_sim_filepath'])
-        self.exe_filepath = Path(path_config['exe_filepath'])
+        self.exe_filepath = optional_path(path_config['exe_filepath'])
         self.bepu_input_path = Path(path_config['bepu_input_path'])
         self.ils_filepath = Path(path_config['ils_filepath'])
 

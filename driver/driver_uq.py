@@ -4,7 +4,7 @@ import logging
 import time
 
 from src.uq import UqDriverStageRun
-from src.job_manager import LocalManager
+from src.job_manager import LocalManager, EngagingManager
 from src.java_manager import JavaUqBepuStageRun
 from src.rf_manager import RfManagerBepuRemote
 from src.config import read_config_from_yaml
@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 
 
-CONFIG_PATH =  r'/media/yw/Research/MIT-TP/test_case_tall3D/files/config/tall3D_SS_BOT_BEPU_noStageRun.yaml'
+CONFIG_PATH =  r'/mnt/research_3TB/MIT-TP/Elbow-Demo/files/config/elbow_BEPU.yaml'
 SAMPLE_LIST = range(1)
 INTERACTIVE_MODE = False
 
