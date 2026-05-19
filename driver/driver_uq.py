@@ -58,7 +58,6 @@ if __name__ == "__main__":
         root = config['path']['root'],
         de_folderpath =config['path']['de_folderpath'],
         ils_filepath=config['path']['ils_filepath'],
-        py_filepath=config['path']['py_filepath'],
         target_quantity = config['rf']['target_quantity'],
         k_l0 =config['rf']['k_l0'],
         s_2 = config['rf']['s_2'],

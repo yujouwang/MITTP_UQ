@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 # ========================================================
 
 class RfManagerBepuRemote:
-    def __init__(self, root, py_filepath, de_folderpath, ils_filepath, target_quantity, k_l0, s_2, n_trunc, n_modes, save_every_rf, model_error_on, disc_error_on):
+    def __init__(self, root, de_folderpath, ils_filepath, target_quantity, k_l0, s_2, n_trunc, n_modes, save_every_rf, model_error_on, disc_error_on):
         self.root = Path(root)
-        self.py_filepath = Path(py_filepath)
+        self.py_filepath = Path(__file__).parent / 'grf_remote.py'
         if de_folderpath:
             self.de_folderpath = Path(de_folderpath)
         else:
