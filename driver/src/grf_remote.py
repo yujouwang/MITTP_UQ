@@ -67,6 +67,7 @@ class MultiplierBepu:
             'cov_matrix': self.save_to/'cov_matrix.csv',
             'V': self.save_to/'V.csv',
             'D': self.save_to/'D.csv',
+            'modes': self.save_to/'modes'
         }
 
         self.ils_me = None
@@ -191,6 +192,30 @@ class MultiplierBepu:
         # Save V and D
         np.savetxt(self.filepaths['V'], V, delimiter=",")
         np.savetxt(self.filepaths['D'], D, delimiter=",")
+
+        # Create a folder, parse the modes V and save them as csv files for visualization
+        modes_folder = self.filepaths['modes']
+        modes_folder.mkdir(parents=True, exist_ok=True)
+        for i in range(20): 
+            mode_i = V[:, i]
+
+            df_mode = pd.DataFrame(
+                np.concatenate([coord, mode_i.reshape(-1, 1)], axis=1),
+                columns=[*self.coord_columns, "mode"]
+            )
+
+            out_file = modes_folder / f"mode_{i}.csv"
+
+            with open(out_file, "w") as f:
+                f.write('"X (m)","Y (m)","Z (m)",mode\n')
+
+            df_mode.to_csv(
+                out_file,
+                mode="a",
+                index=False,
+                header=False
+            )
+
 
         # df 
         df = pd.DataFrame(np.concatenate([coord, rf_lognormal], axis=1), columns=[*self.coord_columns, 'phi'])
