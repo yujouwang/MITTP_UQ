@@ -8,7 +8,7 @@ from src.uq import UqDriver
 from src.job_manager import LocalManager, EngagingManager
 from src.java_manager import JavaUqBepuStageRun
 from src.rf_manager import RfManagerBepuRemote
-from src.config import read_config_from_yaml
+from src.config import read_config_from_yaml, parse_sample_list
 
 
 # Configure the logger
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     CONFIG_PATH = sys.argv[1]
 
     config = read_config_from_yaml(CONFIG_PATH)
-    SAMPLE_LIST = config['rf']['sample_list']
+    SAMPLE_LIST = parse_sample_list(config['rf']['sample_list'])
     path_config = {
         'root':config['path']['root'],
         'base_sim_filepath':config['path']['base_sim_filepath'],

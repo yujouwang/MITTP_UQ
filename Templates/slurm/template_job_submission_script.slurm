@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # 1. Execute python
@@ -6,6 +5,11 @@ source ~/anaconda3/etc/profile.d/conda.sh
 conda activate
 python grf.py
 
+if [ ! -f "cov_matrix.csv" ]; then
+    echo "ERROR: cov_matrix.csv was not generated after running grf.py."
+    touch ABORT
+    exit 1
+fi
 
 
 # 2. Execute STARCCM+
