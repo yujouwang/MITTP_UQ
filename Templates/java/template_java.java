@@ -75,7 +75,7 @@ public class template_java extends StarMacro {
     IntegerValue integerValue_0 = 
       stepStoppingCriterion_0.getMaximumNumberStepsObject();
 
-    integerValue_0.getQuantity().setValue(5);
+    integerValue_0.getQuantity().setValue(MAXITER);
 
 
    // Clean solution history
