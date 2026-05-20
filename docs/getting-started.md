@@ -113,7 +113,7 @@ your_working_directory
 Once the files are ready, run: 
 ```bash
 cd driver
-python driver_uq.py
+python driver_uq.py path/to/config.yaml
 ```
 
 
@@ -125,4 +125,5 @@ For each sample ID, the driver:
 5. Submits the job via SLURM (`EngagingManager`) or runs it locally (`LocalManager`)
 
 The documentation can be found in [driver_uq.py](api/driver.md)
+
 
