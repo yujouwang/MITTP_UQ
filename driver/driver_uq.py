@@ -4,7 +4,7 @@ import logging
 import sys
 import time
 
-from src.uq import UqDriverStageRun
+from src.uq import UqDriver
 from src.job_manager import LocalManager, EngagingManager
 from src.java_manager import JavaUqBepuStageRun
 from src.rf_manager import RfManagerBepuRemote
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         model_error_on = config['rf']['model_error_on'],
         disc_error_on = config['rf']['disc_error_on']
     )
-    uq = UqDriverStageRun(
+    uq = UqDriver(
         path_config = path_config,
         rf_manager = rf_manager,
         job_manager = job_manager, 

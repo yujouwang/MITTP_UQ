@@ -91,24 +91,6 @@ class UqDriver:
         shutil.copy(config_path, self.root / 'config.yaml')
         return
 
-    def init_sample_folder(self, sample_id, folder_suffix=None):
-        """ 
-        Initiate a sample folder for a given sample_id.
-        """
-        raise NotImplementedError
-    
-    def prepare_sample_files(self, sample_id):
-        raise NotImplementedError
-
-    def run_sample(self, sample_id):
-        raise NotImplementedError
-
-
-
-class UqDriverStageRun(UqDriver):
-    """ A class to manage UQ for stage run """
-    def __init__(self, path_config, rf_manager: RfManagerBepuRemote, job_manager: EngagingManager, java_manager: JavaUqBepuStageRun) -> None:
-        super().__init__(path_config, rf_manager, job_manager, java_manager)
     
     def init_sample_folder(self, sample_id, folder_suffix=None):
         """ 
