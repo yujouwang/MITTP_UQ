@@ -1,0 +1,34 @@
+path:
+  root: '/path/to/uq_results'
+  base_sim_filepath: 'working_dir/files/sim/baseline.sim'
+  ils_filepath:  'working_dir/files/model_error/ils.csv'
+  de_folderpath: 'working_dir/files/discretization_error/ls/U_1' 
+  bepu_input_path: 'working_dir/files/input_error/lhs_samples.csv'
+
+job:
+  slurm_filepath: 'working_dir/files/slurm/my_job_submission_script.slurm'
+  partition: None # local: None, remote: 'partition_name'
+  time_for_nodes: None # local: None, remote: 'hh:mm:ss'
+  n_nodes: None # local: None, remote: number of nodes to request
+  n_cores: 6 # number of cores
+  interactive_mode: False
+  rerun: True
+
+java:
+  java_filepath: ['working_dir/files/java/my_java.java']
+  java_keywords: {
+    "MAXITER": "1000",
+    "SOME_NAME_TO_BE_REPLACED": "value_to_replace",
+  }
+
+rf:
+  sample_list: range(1)
+  target_quantity: Integral length scale
+  k_l0: 1.22
+  s_2: 1.24
+  n_trunc: 20
+  n_modes: 3569
+  save_every_rf: False
+  model_error_on: True
+  disc_error_on: True
+

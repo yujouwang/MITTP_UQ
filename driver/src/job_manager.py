@@ -67,7 +67,7 @@ class LocalManager(JobManager):
 
 
 class EngagingManager(JobManager):
-    def __init__(self, slurm_filepath, partition, time_for_nodes, n_nodes, n_cores, n_cores_for_computing, 
+    def __init__(self, slurm_filepath, partition, time_for_nodes, n_nodes, n_cores, 
                  interactive_mode=False, rerun=False, check_file='DONE'):
         logger.info('Initializing EngagingManager')
         self.slurm_filepath = Path(slurm_filepath)
@@ -76,7 +76,6 @@ class EngagingManager(JobManager):
         self.time_for_nodes = time_for_nodes
         self.n_nodes = n_nodes
         self.n_cores = n_cores
-        self.n_cores_for_computing = n_cores_for_computing
         self.interactive_mode = interactive_mode
         self.rerun = rerun
         self.check_file = check_file
@@ -90,7 +89,7 @@ class EngagingManager(JobManager):
             content = f.read()
         
         # Specify the number of cores for computing
-        content = content.replace('N_CORES_FOR_COMPUTING', str(self.n_cores_for_computing))
+        content = content.replace('N_CORES', str(self.n_cores))
 
         # Specify the sim file name
         sim_file_name = glob.glob1(dst_folder, '*.sim')[0]

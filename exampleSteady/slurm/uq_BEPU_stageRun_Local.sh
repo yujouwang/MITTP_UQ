@@ -3,7 +3,7 @@ source ~/anaconda3/etc/profile.d/conda.sh
 conda activate
 starccm18="/opt/Siemens/18.02.008-R8/STAR-CCM+18.02.008-R8/star/bin/starccm+"
 sim_file="SIM_FILE_NAME"
-n_prcs=N_CORES_FOR_COMPUTING
+n_prcs=N_CORES
 
 rm -f DONE
 rm -f ABORT

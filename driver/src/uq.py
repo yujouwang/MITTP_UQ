@@ -126,7 +126,7 @@ class UqDriver:
         prepare_ils(src = self.ils_filepath, dst_folder = case_folder)
 
 
-        logger.info('Preparing java file')
+        logger.info('Preparing input dict')
         bepu_input_dict  = parse_the_bepu_input_var_into_dict(bepu_input_file_path=self.bepu_input_path, 
                                                               sample_id=sample_id)
         
