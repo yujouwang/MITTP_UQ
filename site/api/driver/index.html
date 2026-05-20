@@ -1,0 +1,775 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="BEPU uncertainty quantification tools for CFD simulations">
+      
+      
+      
+      
+        <link rel="prev" href="../../getting-started/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Driver - MIT-TP Research Scripts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#driver-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MIT-TP Research Scripts" class="md-header__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MIT-TP Research Scripts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Driver
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MIT-TP Research Scripts" class="md-nav__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    MIT-TP Research Scripts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Driver
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Driver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slurm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Slurm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Slurm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-slurm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example slurm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behind-the-scene-of-the-slurm-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behind the scene of the slurm file:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#java" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Java
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Java">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#behind-the-scene-java-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behind the scene: java manager
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preprocessor.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preprocessor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="driver-api">Driver API</h1>
+<p>The driver module orchestrates end-to-end UQ runs: setting up sample folders, preparing simulation files, generating random fields, and submitting jobs.</p>
+<h2 id="workflow">Workflow</h2>
+<p>The UQ script will need following files:</p>
+<pre><code>your_working_directory
+├── config
+│   └── my_uq_config.yaml 
+├── discretization_error # Done in step 2
+│   ├── my_least_square_config.yaml
+│   ├── h1
+│   │   └── ils.csv
+│   ├── h2
+│   │   └── ils.csv
+│   ├── h3
+│   │   └── ils.csv
+│   ├── h4
+│   │   └── ils.csv
+│   └── ls  
+│       ├── U_0
+│       │   └── U.csv
+│       ├── U_1
+│       │   └── U.csv
+│       ├── U_2
+│       │   └── U.csv
+│       └── U_3
+│           └── U.csv
+├── input_error  # Done in step 1
+│   ├── lhs_samples.csv # &lt;- Generated by step 1
+│   └── my_input_error_config.yaml
+├── java
+│   └── my_java.java
+├── model_error
+│   └── ils.csv # correspond to the baseline.sim
+├── sim
+│   ├── basline.sim  
+│   └── rf.csv # dummy file; no need to touch it 
+└── slurm
+    └── my_job_submission_script.slurm # control how starccm is called and ran
+
+</code></pre>
+<p>When running :</p>
+<pre><code class="language-bash">cd driver
+python driver_uq.py path/to/uq_config.yaml
+</code></pre>
+<p>This creates UQ file structure look like: </p>
+<pre><code>root
+├── 0                             # Case id
+│   ├── baseline.sim              # baseline sim file
+│   ├── my_java.java              # STAR-CCM+ macro
+│   ├── my_slurm.slrum            # job and resource control 
+│   ├── grf.py                    # python module to generate random file: this file reads: 
+│   ├── ils.csv                   #     ils.csv: use it to guide the Gaussian random field  
+│   ├── rf_dict.json              #     rf_dict.json: information for random field 
+│   └── bepu_input_dict.json      #     bepu_input_dict.json: contains random coefficients 
+├── 1
+│   ├── baseline.sim
+│   ├── my_java.java
+│   ├── my_slurm.slrum
+│   ├── grf.py
+│   ├── ils.csv
+│   ├── rf_dict.json
+│   └── bepu_input_dict.json
+...
+
+</code></pre>
+<p>And the <code>driver_uq.py</code> enters each sub-directory, submit <code>my_slurm.slurm</code> to run the simulation.</p>
+<h2 id="slurm">Slurm</h2>
+<p>The slurm/shell controls the computing nodes / local machine to execute 2 jobs:
+1. Execute python: generate Gaussian Random Field as csv file
+2. Execute STAR-CCM+: run the simulation of the sample</p>
+<p>The template <code>files/slurm/template_job_submission_script.slurm</code> is attached as a reference: </p>
+<h3 id="example-slurm">Example slurm</h3>
+<p>The slurm/shell script is machine-dependent. This is an example of my local linux machine</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# 1. Execute python
+source ~/anaconda3/etc/profile.d/conda.sh 
+conda activate
+python grf.py
+
+
+
+# 2. Execute STARCCM+
+
+# Specify the STARCCM path
+starccm19=&quot;/opt/Siemens/19.04.009-R8/STAR-CCM+19.04.009-R8/star/bin/starccm+&quot;
+rm -f DONE
+rm -f ABORT
+sim_file=&quot;SIM_FILE_NAME&quot; # same as baseline sim specified by uq_config.yaml. will be replaced by job_manager
+n_prcs=N_CORES # specified in uq_config.yaml. will be replaced by job_manager
+
+# Search for the java file in the same folder
+java_file=$(find . -maxdepth 1 -type f -name &quot;*.java&quot; -printf &quot;%T@ %p\n&quot; | sort -nr | head -n 1 | cut -d' ' -f2-)
+
+if [ -z &quot;$java_file&quot; ]; then
+    echo &quot;ERROR: No .java file found in current directory.&quot;
+    touch ABORT
+    exit 1
+fi
+
+echo &quot;Using newest Java macro: $java_file&quot;
+$starccm19  $sim_file -batch $java_file -np $n_prcs | tee -a log
+
+
+touch DONE
+</code></pre>
+<h3 id="behind-the-scene-of-the-slurm-file">Behind the scene of the slurm file:</h3>
+<div style="background-color: white; padding: 10px; display: inline-block;">
+    <img src="slurm1.png" alt="GRF">
+  </div>
+
+<div style="background-color: white; padding: 10px; display: inline-block;">
+    <img src="slurm2.png" alt="GRF">
+  </div>
+
+<h2 id="java">Java</h2>
+<p>Java macro is used for control STAR-CCM+. </p>
+<p>When running the star, the java macro: </p>
+<pre><code>- Change Input parameter: using field function 
+- Turn on the eddy viscosity user scaling model and reload rf.csv
+- Run 
+</code></pre>
+<p>The template is in <code>files/java/template_java.java</code>.
+When customize it, <strong>PUT KEYWORDS AS PLACEHOLDERS</strong>. <strong>THE KEYWORDS SHOULD BE THE SAME AS THE ONES DEFINED IN</strong> <code>files/input_error/my_input_error_config.yaml</code>. </p>
+<p>One example is: </p>
+<pre><code class="language-java">public class template_java extends StarMacro {
+
+  public void execute() {
+    change_IC(); // customize this function
+    turn_on_viscosity_perturbation(); // leave it as it is 
+    run(); // leave it as it is
+  }
+
+  private void change_IC() {
+
+    Simulation simulation_0 = 
+      getActiveSimulation();
+
+    /* ==================================================
+        Customize: perturb through field functions 
+     =================================================*/
+    UserFieldFunction userFieldFunction_0 = 
+    ((UserFieldFunction) simulation_0.getFieldFunctionManager().getFunction(&quot;0_perturbed_mass_flow&quot;));
+    userFieldFunction_0.setDefinition(&quot;${IHT Mass Flow} * IHT_MASSFLOW&quot;); //--&gt; IHT_MASSFLOW is the place holder
+
+    // Add more if needed...
+
+  }
+</code></pre>
+<h3 id="behind-the-scene-java-manager">Behind the scene: java manager</h3>
+<div style="background-color: white; padding: 10px; display: inline-block;">
+    <img src="java_manager.png" alt="java_manager">
+  </div>
+
+<p>Note
+- We left the same mechanism for extra control from <code>uq_config.yaml</code>(see below). The java manager search for <code>(key, value)</code> pairs in <code>java_keywords</code> node. It is useful to control the stopping criteria. Just remember to <strong>LEAVE A KEYWORD PLACEHOLDER</strong> in the java file. </p>
+<h2 id="config">config</h2>
+<p>All the files in the UQ-subfolders (i.e., directory <code>0</code>, <code>1</code>, <code>2</code>...) are handled by the <code>driver_uq.py</code>, which reads the <code>my_uq_config.yaml</code> file and initiate: 
+-  <code>job_manager</code>: controls the resource and job submission
+-  <code>rf_manager</code>: controls the random field module
+-  <code>java_manager</code>: takes care of the STAR-CCM+ java macro</p>
+<p>The tempalte for <code>my_uq_config.yaml</code> can be found in <code>Template/config/template_uq_config.yaml</code></p>
+<pre><code class="language-yaml">
+path: # &lt;- Specify the paths of the files
+  root: '/path/to/uq_results'
+  base_sim_filepath: 'working_dir/files/sim/baseline.sim'
+  ils_filepath:  'working_dir/files/model_error/ils.csv'
+  de_folderpath: 'working_dir/files/discretization_error/ls/U_1' 
+  bepu_input_path: 'working_dir/files/input_error/lhs_samples.csv'
+
+job: # &lt;- Control the job and resource  
+  slurm_filepath: 'working_dir/files/slurm/my_job_submission_script.slurm'
+  partition: None # local: None, remote: 'partition_name'
+  time_for_nodes: None # local: None, remote: 'hh:mm:ss'
+  n_nodes: None # local: None, remote: number of nodes to request
+  n_cores: 6 # number of cores
+  interactive_mode: False
+  rerun: True
+
+java: # the java 
+  java_filepath: ['working_dir/files/java/my_java.java'] # it is a list: can be run in more than one java 
+  java_keywords: {  # search for the keys, and replace with the values. See the Java section below
+    &quot;MAXITER&quot;: &quot;1000&quot;,
+    &quot;SOME_NAME_TO_BE_REPLACED&quot;: &quot;value_to_replace&quot;,
+  }
+
+rf: # control the random field
+  sample_list: range(5) # Sample ID. Can be [1, 2, 3, 4, 5], or range(5), or range(5, 10)
+  target_quantity: Integral length scale 
+  k_l0: 1.22
+  s_2: 1.24
+  n_trunc: 20
+  n_modes: 3569
+  save_every_rf: False
+  model_error_on: True
+  disc_error_on: True
+
+
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.sections", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
