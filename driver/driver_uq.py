@@ -29,6 +29,7 @@ if __name__ == "__main__":
     CONFIG_PATH = sys.argv[1]
 
     config = read_config_from_yaml(CONFIG_PATH)
+    SAMPLE_LIST = config['rf']['sample_list']
     path_config = {
         'root':config['path']['root'],
         'base_sim_filepath':config['path']['base_sim_filepath'],
