@@ -18,3 +18,8 @@ The workflow has two main stages:
 | [`driver/`](api/driver.md) | UQ runs: sample setup, job submission, random field generation |
 | [`preprocessor/inputlhsGen/`](api/preprocessor.md#lhs-sampling) | Latin Hypercube Sampling for uncertain input parameters |
 | [`preprocessor/numericalleastSquare/`](api/preprocessor.md#least-squares-fields) | Compute least-squares discretization error fields across grid resolutions |
+
+
+## Tutorial
+- See [getting-started](getting-started.md)
+- Example: [Demo Elbow](Demo_elbow.md)
