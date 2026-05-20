@@ -15,6 +15,14 @@ def _normalized_column_name(column):
     return column.strip().lower()
 
 
+def _extract_unit(column):
+    """Return the unit string from 'X (m)' → 'm', or '' if no unit is present."""
+    normalized = _normalized_column_name(column)
+    if '(' in normalized and normalized.endswith(')'):
+        return normalized[normalized.index('(') + 1:-1].strip()
+    return ''
+
+
 def find_coordinate_columns(df):
     coord_columns = {}
     for axis in ('x', 'y', 'z'):
@@ -26,11 +34,18 @@ def find_coordinate_columns(df):
         if not matches:
             raise KeyError(
                 f"Could not find coordinate column for '{axis.upper()}'. "
-                f"Expected labels like '{axis.upper()} (m)', "
-                f"'{axis.upper()} (in)', '{axis.upper()}', or '{axis}'. "
+                f"Expected labels like '{axis.upper()} (m)' or '{axis.upper()}' (SI, meters). "
                 f"Available columns: {list(df.columns)}"
             )
-        coord_columns[axis] = matches[0]
+        col = matches[0]
+        unit = _extract_unit(col)
+        if unit not in ('', 'm'):
+            raise ValueError(
+                f"Coordinate column '{col}' has unit '{unit}'. "
+                f"Only SI units are accepted (meters). "
+                f"Please convert coordinates to meters before loading."
+            )
+        coord_columns[axis] = col
     return [coord_columns[axis] for axis in ('x', 'y', 'z')]
 
 

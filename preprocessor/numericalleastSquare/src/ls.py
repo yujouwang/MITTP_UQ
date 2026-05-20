@@ -13,29 +13,45 @@ from tqdm import tqdm
 # =======================================
 #       Helper functions
 # =======================================
-def _normalize_coordinate_column(column_name):
-    column_name = str(column_name).strip().lower()
-    column_name = re.sub(r"\s*\([^)]*\)\s*", "", column_name)
-    return column_name.strip()
+def _normalized_column_name(column_name):
+    return str(column_name).strip().lower()
+
+
+def _extract_unit(column_name):
+    """Return the unit string from 'X (m)' → 'm', or '' if no unit is present."""
+    normalized = _normalized_column_name(column_name)
+    if '(' in normalized and normalized.endswith(')'):
+        return normalized[normalized.index('(') + 1:-1].strip()
+    return ''
+
+
+def _strip_unit(column_name):
+    normalized = _normalized_column_name(column_name)
+    return re.sub(r"\s*\([^)]*\)\s*", "", normalized).strip()
+
 
 def get_coordinate_columns(df):
     """
-    Find coordinate columns such as X (m), X (in), X, x, y, z.
-
-    Unit labels are ignored here. The coordinate values are used as-is, so input
-    files should still be in consistent units with each other.
+    Find coordinate columns such as 'X (m)' or 'X'. Only SI units (meters) are accepted.
     """
     coord_columns = {}
     for column in df.columns:
-        normalized = _normalize_coordinate_column(column)
-        if normalized in {'x', 'y', 'z'} and normalized not in coord_columns:
-            coord_columns[normalized] = column
+        bare = _strip_unit(column)
+        if bare in {'x', 'y', 'z'} and bare not in coord_columns:
+            unit = _extract_unit(column)
+            if unit not in ('', 'm'):
+                raise ValueError(
+                    f"Coordinate column '{column}' has unit '{unit}'. "
+                    f"Only SI units are accepted (meters). "
+                    f"Please convert coordinates to meters before loading."
+                )
+            coord_columns[bare] = column
 
     missing = [axis for axis in ('x', 'y', 'z') if axis not in coord_columns]
     if missing:
         raise KeyError(
             f"Could not find coordinate column(s) {missing}. "
-            f"Expected names like X (m), X (in), X, x, y, z. "
+            f"Expected names like 'X (m)' or 'X' (SI, meters). "
             f"Available columns: {list(df.columns)}"
         )
 
