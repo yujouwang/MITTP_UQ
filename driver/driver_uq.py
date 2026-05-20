@@ -44,7 +44,6 @@ if __name__ == "__main__":
         time_for_nodes=config['job']['time_for_nodes'],
         n_nodes=config['job']['n_nodes'],
         n_cores=config['job']['n_cores'],
-        n_cores_for_computing=config['job']['n_cores_for_computing'],
         interactive_mode = config['job']['interactive_mode'], 
         rerun = config['job']['rerun']
     )

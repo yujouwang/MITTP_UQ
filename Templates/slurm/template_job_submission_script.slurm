@@ -15,7 +15,7 @@ starccm19="/opt/Siemens/19.04.009-R8/STAR-CCM+19.04.009-R8/star/bin/starccm+"
 rm -f DONE
 rm -f ABORT
 sim_file="SIM_FILE_NAME" # same as baseline sim specified by uq_config.yaml. will be replaced by job_manager
-n_prcs=N_CORES_FOR_COMPUTING # specified in uq_config.yaml. will be replaced by job_manager
+n_prcs=N_CORES # specified in uq_config.yaml. will be replaced by job_manager
 
 # Search for the java file in the same folder
 java_file=$(find . -maxdepth 1 -type f -name "*.java" -printf "%T@ %p\n" | sort -nr | head -n 1 | cut -d' ' -f2-)
