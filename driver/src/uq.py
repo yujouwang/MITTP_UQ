@@ -68,7 +68,7 @@ class UqDriver:
         # Set up path
         self.root = Path(path_config['root'])
         self.base_sim_filepath = Path(path_config['base_sim_filepath'])
-        self.bepu_input_path = optional_path(path_config['bepu_input_path'])
+        self.bepu_input_path = path_config['bepu_input_path']
         self.ils_filepath = Path(path_config['ils_filepath'])
 
         # Set up helper classes
@@ -127,12 +127,8 @@ class UqDriver:
 
 
         logger.info('Preparing input dict')
-        if self.bepu_input_path is not None:
-            bepu_input_dict  = parse_the_bepu_input_var_into_dict(bepu_input_file_path=self.bepu_input_path, 
+        bepu_input_dict  = parse_the_bepu_input_var_into_dict(bepu_input_file_path=self.bepu_input_path, 
                                                                 sample_id=sample_id)
-        else:
-            bepu_input_dict = {} # empty dict if no bepu input file is provided 
-        
 
         logger.info('Preparing java files')
         self.java_manager.prepare_files(bepu_input_dict=bepu_input_dict, dst_folder=case_folder)
