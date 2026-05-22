@@ -38,7 +38,7 @@ if __name__ == "__main__":
     }
 
     # Set up job manager
-    job_manager = LocalManager(
+    job_manager = EngagingManager(
         slurm_filepath = config['job']['slurm_filepath'],  
         partition=config['job']['partition'],
         time_for_nodes=config['job']['time_for_nodes'],
