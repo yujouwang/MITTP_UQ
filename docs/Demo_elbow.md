@@ -83,7 +83,7 @@ files/discretization_error
 ### Extract $L_0$
   - Import the ccm file as volume mesh, it will crate a new region, rename it as `GRF_mesh`
   <div style="background-color: white; padding: 10px; display: inline-block;">
-    <img src="api/Import_volume_mesh.png" alt="ImportVolumeMesh">
+    <img src="api/import_volume_mesh.png" alt="ImportVolumeMesh">
   </div>
 
 

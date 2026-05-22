@@ -12,22 +12,20 @@
       
       
       
-        <link rel="next" href="getting-started/">
-      
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>MIT-TP Research Scripts</title>
+        <title>processor leastSquare - MIT-TP Research Scripts</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -46,9 +44,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mit-tp-research-scripts" class="md-skip">
+        <a href="#estimate-the-numerical-error-using-least-square-approach" class="md-skip">
           Skip to content
         </a>
       
@@ -82,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="MIT-TP Research Scripts" class="md-header__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
+    <a href="../.." title="MIT-TP Research Scripts" class="md-header__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -102,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              processor leastSquare
             
           </span>
         </div>
@@ -182,7 +180,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="MIT-TP Research Scripts" class="md-nav__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
+    <a href="../.." title="MIT-TP Research Scripts" class="md-nav__button md-logo" aria-label="MIT-TP Research Scripts" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -197,37 +195,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -243,48 +214,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Modules
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -296,7 +225,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   
@@ -375,7 +304,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/driver/" class="md-nav__link">
+      <a href="../driver/" class="md-nav__link">
         
   
   
@@ -403,7 +332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/preprocessor.md" class="md-nav__link">
+      <a href="../preprocessor.md" class="md-nav__link">
         
   
   
@@ -448,39 +377,79 @@
 
 
 
-<h1 id="mit-tp-research-scripts">MIT-TP Research Scripts</h1>
-<p>Tools for running <strong>Best Estimate Plus Uncertainty (BEPU)</strong> analysis on CFD simulations (STAR-CCM+). </p>
-<h2 id="overview">Overview</h2>
-<p>The workflow has two main stages:</p>
-<ol>
-<li><strong>Preprocessor</strong></li>
-<li>Input error : Latin-hypercube sampling</li>
-<li>Numerical error: Least-square estimation</li>
-<li><strong>Driver</strong></li>
-</ol>
-<h2 id="modules">Modules</h2>
-<table>
-<thead>
-<tr>
-<th>Module</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="api/driver/"><code>driver/</code></a></td>
-<td>UQ runs: sample setup, job submission, random field generation</td>
-</tr>
-<tr>
-<td><a href="api/preprocessor.md#lhs-sampling"><code>preprocessor/inputlhsGen/</code></a></td>
-<td>Latin Hypercube Sampling for uncertain input parameters</td>
-</tr>
-<tr>
-<td><a href="api/preprocessor.md#least-squares-fields"><code>preprocessor/numericalleastSquare/</code></a></td>
-<td>Compute least-squares discretization error fields across grid resolutions</td>
-</tr>
-</tbody>
-</table>
+  <h1>processor leastSquare</h1>
+
+<h2 id="estimate-the-numerical-error-using-least-square-approach">Estimate the numerical error using least-square approach</h2>
+<p>Computes least-square version of Richardson-extrapolation-based discretization error bounds at every spatial point, using CFD outputs from multiple grid resolutions.</p>
+<p>The workflow is: </p>
+<pre><code>Conduct mesh convergence tests for 4 (or more) mesh 
+-&gt; STAR-CCM+ output csv files (with columns X, Y, Z, L0) for each mesh configuration
+-&gt; The code to read those csv files
+-&gt; Perform point-by-point least-square estimation 
+</code></pre>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-bash">cd preprocessor/numericalleastSquare
+python processor_leastSquare.py path/to/ls_config.yaml
+</code></pre>
+<h2 id="the-config-file">The config file</h2>
+<p>The configuration file contains information of 
+1. The directory
+2. The target quantity for error estimation (integral length scale in our case)
+3. The file location
+4. The mesh configuration (how many cells used in grid convergence study)</p>
+<pre><code class="language-yaml">paths:
+  root:  '/path/to/root' # where to save the results  
+
+ls:
+  field_name: 'Integral length scale' # the target of the numerical error estimation
+  save_to:  '/path/to/results' # where to save the results 
+
+grids:
+  grid_1: 
+    name: 'grid0' # name of the grid object
+    dir: '/path/to/mesh_folder' # where to find the STAR-CCM+ output csv 
+    field_file_name: 'ils.csv' # the name of the output csv
+    N: 2094751 # number of cells used in this mesh 
+    V: 0.01398  # the volume of the target region
+
+  grid_2:
+    name: 'grid1'
+    dir: '/path/to/mesh_folder' 
+    field_file_name: 'ils.csv'
+    N: 456351
+    V: 0.01398  
+
+  grid_3:
+    name: 'grid2'
+    dir: '/path/to/mesh_folder'
+    field_file_name: 'ils.csv'
+    N: 163257
+    V: 0.01398  
+
+  grid_4:
+    name: 'grid3'
+    dir: '/path/to/mesh_folder'
+    field_file_name: 'ils.csv'
+    N: 237738
+    V: 0.01398  
+
+points:  # ask the code to perform point-by-point estimation, start the point id 0, end with point id 3569 
+  start: 0 
+  end: 3569  
+</code></pre>
+<p>After execution, it creates four <code>U_i</code> folders  (and a bunch of intermediate files)</p>
+<pre><code>/path/to/results
+├── U_0
+│   └── U.csv  # correspond to the error of grid0/ils.csv 
+├── U_1
+│   └── U.csv  # correspond to the error of grid1/ils.csv 
+├── U_2
+│   └── U.csv  # correspond to the error of grid2/ils.csv 
+└── U_3
+    └── U.csv  # correspond to the error of grid3/ils.csv 
+
+</code></pre>
+<p>For each of <code>U.csv</code>, it contains information of <code>(X, Y, Z)</code> and <code>LB, UB</code> (lower bound and upper bound)</p>
 
 
 
@@ -530,10 +499,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.sections", "toc.integrate"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.sections", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

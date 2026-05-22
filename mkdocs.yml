@@ -1,6 +1,5 @@
 site_name: MIT-TP Research Scripts
 site_description: BEPU uncertainty quantification tools for CFD simulations
-use_directory_urls: false
 
 theme:
   name: material
@@ -23,9 +22,6 @@ plugins:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Tutorial:
-    - Demo (Elbow): Demo_elbow.md
   - API Reference:
     - Driver: api/driver.md
-    - LHS Sampling: api/processor_BEPU_sampling.md
-    - Least-Squares Error: api/processor_leastSquare.md
+    - Preprocessor: api/preprocessor.md
