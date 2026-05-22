@@ -33,6 +33,10 @@ model_error:
 
 ```
 
+Set `input_error: null` (or `input_error: None`) when no user input-error
+variables should be sampled. The CSV will still contain `DEVAR` and the
+`XI_*` columns used for discretization and model error.
+
 
 Outputs a CSV of LHS samples (one row per sample, one column per uncertain parameter). 
 - `SampleID`: index of sample

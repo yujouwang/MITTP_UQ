@@ -59,8 +59,15 @@ def read_config_from_yaml(config_path):
 
 def parse_input_error(config):
     input_error = config.get("input_error")
-    if not isinstance(input_error, dict) or not input_error:
-        raise ValueError("Config must define at least one variable under 'input_error'.")
+
+    # PyYAML reads the plain YAML value `None` as a string, while `null`
+    # becomes Python None. Accept both as "no input-error variables".
+    if input_error is None or (
+        isinstance(input_error, str) and input_error.strip().lower() in {"none", "null"}
+    ):
+        return {}, {}
+    if not isinstance(input_error, dict):
+        raise ValueError("input_error must be a mapping or None.")
 
     mu = {}
     sigma = {}
