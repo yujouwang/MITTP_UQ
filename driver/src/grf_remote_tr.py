@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import scipy
 from scipy import special
-from scipy.spatial import distance_matrix
+from scipy.spatial import distance_matrix, cKDTree
 
 import logging
 logger = logging.getLogger(__name__)
@@ -80,9 +80,16 @@ def find_coordinate_columns(df):
 
 
 class MultiplierBepu:
-    def __init__(self, target_quantity, k_l0, s_2, ils_filepath, de_filepath, bepu_input_dict, save_to, model_error_on, disc_error_on):
+    def __init__(self, target_quantity, k_l0, s_2, ils_filepath, de_filepath, bepu_input_dict, save_to, model_error_on, disc_error_on, ils_norm=None, cov_form='mean'):
         self.k_l0 = k_l0
         self.s_2 = s_2
+        # ils_norm: None keeps the length scale k_l0 * ILS in meters; a dict
+        # {l_ref, ils_ref, l_min_factor} normalizes it, see get_length_scale()
+        self.ils_norm = ils_norm
+        # cov_form: 'mean' (arithmetic mean of the pointwise length scales) or
+        # 'paciorek' (Paciorek-Schervish, positive semi-definite by construction)
+        assert cov_form in ('mean', 'paciorek'), f'Unknown cov_form: {cov_form}'
+        self.cov_form = cov_form
         self.ils_filepath = Path(ils_filepath)
         if de_filepath:
             self.de_filepath = Path(de_filepath)
@@ -106,6 +113,34 @@ class MultiplierBepu:
         self.ils_base, self.coord, self.coord_columns = self.init_ils()
         self.model_error_on = model_error_on
         self.disc_error_on = disc_error_on
+        if self.ils_norm is not None:
+            self.init_ils_norm()
+
+    def init_ils_norm(self):
+        """Fix the normalization constants from the base ILS.
+
+        ils_ref comes from ils_base, never from the per-sample total ILS, so the
+        discretization-error part of the ILS still changes the length scale.
+        """
+        norm = self.ils_norm
+        assert 'l_ref' in norm, 'ils_norm needs l_ref (m).'
+        self.l_ref = float(norm['l_ref'])
+
+        ils_ref = norm.get('ils_ref', 'median')
+        if ils_ref == 'median':
+            self.ils_ref = float(np.median(self.ils_base))
+        elif ils_ref == 'mean':
+            self.ils_ref = float(np.mean(self.ils_base))
+        else:
+            self.ils_ref = float(ils_ref)
+        assert self.ils_ref > 0, f'ils_ref must be positive, got {self.ils_ref}'
+
+        # Nearest-neighbour spacing of the RF points, for the length-scale floor
+        self.l_min_factor = float(norm.get('l_min_factor', 0.0))
+        self.h = cKDTree(self.coord).query(self.coord, k=2)[0][:, 1]
+        logger.info(f'ILS normalization: l_ref={self.l_ref}, ils_ref={self.ils_ref:.4e}, '
+                    f'l_min_factor={self.l_min_factor}')
+        return
 
     def init_ils(self) :
         # Read data
@@ -199,36 +234,83 @@ class MultiplierBepu:
     # independent of s_2 / k_l0, which scale diagonal and off-diagonal alike.
     BESSEL_CUTOFF = 40.0
 
+    def get_length_scale(self, ils):
+        """Pointwise length scale L_i entering the covariance (u = 2 sqrt(2) r / L).
+
+        Without ils_norm, L_i = k_l0 * ILS_i in meters, as in v0. With ils_norm
+        the ILS only sets the spatial shape and l_ref sets the size:
+
+            L_i = k_l0 * l_ref * ILS_i / ils_ref
+
+        so k_l0 is dimensionless (L = k_l0 * l_ref where ILS = ils_ref). L_i is
+        then floored at l_min_factor * (nearest-neighbour spacing at i), so
+        low-ILS regions (near walls) do not fall below the point spacing and
+        turn into uncorrelated noise.
+        """
+        if self.ils_norm is None:
+            return self.k_l0 * ils
+
+        L = self.k_l0 * self.l_ref * ils / self.ils_ref
+        if self.l_min_factor > 0:
+            L_min = self.l_min_factor * self.h
+            n_floored = int(np.count_nonzero(L < L_min))
+            L = np.maximum(L, L_min)
+            logger.info(f'Length scale floor applied at {n_floored}/{len(L)} points')
+        q = np.percentile(L, [0, 50, 100])
+        logger.info(f'Length scale L (m): min {q[0]:.3e}, median {q[1]:.3e}, max {q[2]:.3e}')
+        return L
+
     def get_cov_matrix(self):
         """Matern nu=1 covariance with a pointwise-varying length scale.
 
-        Agrees with get_cov_matrix_v0() to ~6e-16 absolute (eigenvalues to
-        ~3e-14), but evaluates the Bessel function only where it is not
-        numerically zero. On this case's data the correlation length is far
-        below the point spacing, so ~0.1% of the n x n entries survive the
-        cutoff and the build is ~8-11x faster than the dense kn(1, .) form.
+        With cov_form='mean' this agrees with get_cov_matrix_v0() to ~6e-16
+        absolute (eigenvalues to ~3e-14), but evaluates the Bessel function
+        only where it is not numerically zero. On this case's data the
+        correlation length is far below the point spacing, so ~0.1% of the
+        n x n entries survive the cutoff and the build is ~8-11x faster than
+        the dense kn(1, .) form.
+
+        Averaging L_i and L_j arithmetically does not give a valid covariance
+        when L varies in space: with a sharp near-wall drop in ILS the matrix
+        has large negative eigenvalues, which get_kle() then clips. The
+        Paciorek-Schervish form (cov_form='paciorek', d=3),
+
+            L_ij^2 = (L_i^2 + L_j^2) / 2
+            C_ij   = (L_i L_j / L_ij^2)^(3/2) * s_2/g * u K1(u),  u = 2 sqrt(2) r / L_ij
+
+        is positive semi-definite for any L field and equals 'mean' when L is
+        uniform.
         """
         logger.debug('Covariance matrix not found. Running process_cov_matrix')
         ils = self.ils_me + self.ils_de + self.ils_ie
         coord = self.coord
+        L = self.get_length_scale(ils)
 
         r = distance_matrix(coord, coord, p=2)
-        ils_mean = np.add.outer(ils, ils)
-        ils_mean /= 2
-
-        # avoid division by zero:
-        np.maximum(ils_mean, 1E-9, out=ils_mean)
+        # avoid division by zero: same floor as v0, 1E-9 on the averaged ILS
+        L_floor = self.k_l0 * 1E-9
+        if self.cov_form == 'paciorek':
+            L_ij = np.add.outer(L**2, L**2)
+            L_ij /= 2
+            np.maximum(L_ij, L_floor**2, out=L_ij)
+            pre = np.multiply.outer(L, L)
+            pre /= L_ij
+            pre **= 1.5
+            np.sqrt(L_ij, out=L_ij)
+        else:
+            L_ij = np.add.outer(L, L)
+            L_ij /= 2
+            np.maximum(L_ij, L_floor, out=L_ij)
 
         g = scipy.special.gamma(1)
 
         # The Bessel argument u = sqrt(2) * r_l0 equals the prefactor, so
         # C = s_2/g * u * K1(u). Built in place to avoid n x n temporaries.
-        ils_mean *= self.k_l0
         u = r
-        u /= ils_mean
+        u /= L_ij
         u *= 2               # u is now r_l0
         u *= np.sqrt(2)      # u is now sqrt(2) * r_l0
-        del ils_mean
+        del L_ij
 
         C = np.zeros_like(u)
         near = u < self.BESSEL_CUTOFF
@@ -236,6 +318,9 @@ class MultiplierBepu:
         # fill_diagonal below, exactly as in v0.
         with np.errstate(invalid='ignore'):
             C[near] = (self.s_2 / g) * scipy.special.k1(u[near]) * u[near]
+        if self.cov_form == 'paciorek':
+            C[near] *= pre[near]
+            del pre
 
         c = self.s_2 / g* np.sqrt(2)
         np.fill_diagonal(C, c)
@@ -365,6 +450,9 @@ class MultiplierBepu:
         # Round-off can push the trailing eigenvalues of a PSD matrix slightly
         # negative; svd returned magnitudes, so sqrt(D) was always real. Clip
         # to keep that true when N_truncate reaches the numerical null space.
+        # A large negative minimum means C itself is not a valid covariance.
+        logger.info(f'Smallest eigenvalue before clipping: {D[-1]:.3e} '
+                    f'(largest {D[0]:.3e})')
         np.maximum(D, 0.0, out=D)
 
         # Eigenvector signs are arbitrary (they were with svd too). Pin them
@@ -477,6 +565,8 @@ if __name__ == "__main__":
         bepu_input_dict=bepu_input_dict, 
         model_error_on = var_config['model_error_on'],
         disc_error_on = var_config['disc_error_on'],
+        ils_norm = var_config.get('ils_norm'),
+        cov_form = var_config.get('cov_form', 'mean'),
         save_to='.')
 
     # m.get_cov_matrix()

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # ========================================================
 
 class RfManagerBepuRemote:
-    def __init__(self, root, de_folderpath, ils_filepath, target_quantity, k_l0, s_2, n_trunc, n_modes, save_every_rf, model_error_on, disc_error_on, grf_script='grf_remote.py'):
+    def __init__(self, root, de_folderpath, ils_filepath, target_quantity, k_l0, s_2, n_trunc, n_modes, save_every_rf, model_error_on, disc_error_on, grf_script='grf_remote.py', ils_norm=None, cov_form='mean'):
         self.root = Path(root)
         # Script copied into each case as grf.py: grf_remote.py, or
         # grf_remote_tr.py to track KL modes across transient windows
@@ -31,6 +31,8 @@ class RfManagerBepuRemote:
         self.save_every_rf = save_every_rf
         self.model_error_on = model_error_on
         self.disc_error_on = disc_error_on
+        self.ils_norm = ils_norm
+        self.cov_form = cov_form
 
         if self.disc_error_on:
             assert self.de_folderpath.exists()
@@ -49,7 +51,9 @@ class RfManagerBepuRemote:
             'n_trunc': self.n_trunc,
             'de_filepath': str(de_filepath),
             'model_error_on': self.model_error_on,
-            'disc_error_on':self.disc_error_on
+            'disc_error_on':self.disc_error_on,
+            'ils_norm': self.ils_norm,
+            'cov_form': self.cov_form
         }
 
         # save the dict as a json file

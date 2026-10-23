@@ -65,7 +65,9 @@ if __name__ == "__main__":
         save_every_rf = config['rf']['save_every_rf'],
         model_error_on = config['rf']['model_error_on'],
         disc_error_on = config['rf']['disc_error_on'],
-        grf_script = config['rf'].get('grf_script', 'grf_remote.py')
+        grf_script = config['rf'].get('grf_script', 'grf_remote.py'),
+        ils_norm = config['rf'].get('ils_norm'),
+        cov_form = config['rf'].get('cov_form', 'mean')
     )
     uq = UqDriver(
         path_config = path_config,
