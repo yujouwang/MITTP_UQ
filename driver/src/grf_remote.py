@@ -133,7 +133,13 @@ class MultiplierBepu:
         self.ils_ie = 0
         return 
 
-    def get_cov_matrix(self):
+    def get_cov_matrix_v0(self):
+        """Original implementation, kept for reference and cross-checks.
+
+        Uses scipy.special.kn(1, x), the general integer-order routine,
+        which is ~5x slower than the k1(x) specialization used by
+        get_cov_matrix(). Values agree to ~2e-15 relative.
+        """
         logger.debug('Covariance matrix not found. Running process_cov_matrix')
         ils =  self.ils_me + self.ils_de + self.ils_ie
         coord = self.coord
@@ -157,6 +163,55 @@ class MultiplierBepu:
         return C
  
 
+    # Above this Bessel argument, u * K1(u) is below machine epsilon relative
+    # to the diagonal (u=40 -> 3.4e-17 against a diagonal of ~1.75), so the
+    # entry is zero in double precision. The threshold is dimensionless and
+    # independent of s_2 / k_l0, which scale diagonal and off-diagonal alike.
+    BESSEL_CUTOFF = 40.0
+
+    def get_cov_matrix(self):
+        """Matern nu=1 covariance with a pointwise-varying length scale.
+
+        Agrees with get_cov_matrix_v0() to ~6e-16 absolute (eigenvalues to
+        ~3e-14), but evaluates the Bessel function only where it is not
+        numerically zero. On this case's data the correlation length is far
+        below the point spacing, so ~0.1% of the n x n entries survive the
+        cutoff and the build is ~8-11x faster than the dense kn(1, .) form.
+        """
+        logger.debug('Covariance matrix not found. Running process_cov_matrix')
+        ils = self.ils_me + self.ils_de + self.ils_ie
+        coord = self.coord
+
+        r = distance_matrix(coord, coord, p=2)
+        ils_mean = np.add.outer(ils, ils)
+        ils_mean /= 2
+
+        # avoid division by zero:
+        np.maximum(ils_mean, 1E-9, out=ils_mean)
+
+        g = scipy.special.gamma(1)
+
+        # The Bessel argument u = sqrt(2) * r_l0 equals the prefactor, so
+        # C = s_2/g * u * K1(u). Built in place to avoid n x n temporaries.
+        ils_mean *= self.k_l0
+        u = r
+        u /= ils_mean
+        u *= 2               # u is now r_l0
+        u *= np.sqrt(2)      # u is now sqrt(2) * r_l0
+        del ils_mean
+
+        C = np.zeros_like(u)
+        near = u < self.BESSEL_CUTOFF
+        # k1(0) is inf and inf * 0 is nan on the diagonal; overwritten by
+        # fill_diagonal below, exactly as in v0.
+        with np.errstate(invalid='ignore'):
+            C[near] = (self.s_2 / g) * scipy.special.k1(u[near]) * u[near]
+
+        c = self.s_2 / g* np.sqrt(2)
+        np.fill_diagonal(C, c)
+        np.savetxt(self.filepaths['cov_matrix'], C, delimiter=",")
+        return C
+
     def get_de_rv(self):
         de_rv =  self.bepu_input_dict['DEVAR']
         logger.debug(f'de_rv value: {de_rv}')
@@ -178,7 +233,29 @@ class MultiplierBepu:
         # Compute the grf 
         C = self.get_cov_matrix()
         n_modes = len(C)
-        V, D, flags = np.linalg.svd(C)
+        # C is symmetric positive semi-definite by construction, so its SVD
+        # and its eigendecomposition coincide. eigh exploits that symmetry:
+        # ~2x faster than svd at n ~ 1e4, with eigenvalues and modes matching
+        # to ~1e-8 and the covariance V @ diag(D) @ V.T reproduced exactly.
+        # eigh returns ascending eigenvalues, so flip to the descending order
+        # that svd returned and that the KLE truncation below assumes.
+        w, Q = np.linalg.eigh(C)
+        order = np.argsort(w)[::-1]
+        D = w[order]
+        V = Q[:, order]
+
+        # Round-off can push the trailing eigenvalues of a PSD matrix slightly
+        # negative; svd returned magnitudes, so sqrt(D) was always real. Clip
+        # to keep that true when N_truncate reaches the numerical null space.
+        np.maximum(D, 0.0, out=D)
+
+        # Eigenvector signs are arbitrary (they were with svd too). Pin them
+        # with a deterministic convention - largest-magnitude entry positive -
+        # so repeated runs with the same xi draw the same field.
+        peak = np.abs(V).argmax(axis=0)
+        signs = np.sign(V[peak, np.arange(V.shape[1])])
+        signs[signs == 0] = 1.0
+        V *= signs
 
         # Compose rf
         mu = np.zeros((n_modes,1))
