@@ -28,7 +28,14 @@ def prepare_sim(src, dst_folder):
     # get the sim file name
     file_name = src.stem
     # file_name = file_name.split('@')[0]
-    shutil.copy(src, dst_folder/f'{file_name}.sim')
+
+    
+    dest = dst_folder/f'{file_name}.sim'
+    # check if the dest file already exists
+    if dest.exists():
+        logger.warning(f"Destination file {dest} already exists")
+    else:
+        shutil.copy(src, dest)
     return
 
 def prepare_ils(src, dst_folder):
