@@ -9,7 +9,6 @@ from scipy.stats import norm
 import yaml
 
 
-DEFAULT_N_SAMPLES = 59
 
 
 def lhs_gaussian_independent(mu_dict, sigma_dict, N, seed=None):
@@ -96,8 +95,13 @@ def get_n_modes(config):
     except KeyError as exc:
         raise ValueError("Config must define model_error.N_modes.") from exc
 
+def get_n_samples(config):
+    try:
+        return int(config["n_samples"])
+    except KeyError as exc:
+        raise ValueError("Config must define n_samples.") from exc
 
-def main(mu, sigma, n_modes, save_to):
+def main(mu, sigma, n_modes, n_samples, save_to):
     # Add input variables: discretization error rv
     mu[f'DEVAR'] = 0.0
     sigma[f'DEVAR'] = 1.0
@@ -113,7 +117,7 @@ def main(mu, sigma, n_modes, save_to):
     # get samples 
     print('Generating LHS samples...')
     print(len(list(mu.values())))
-    X = lhs_gaussian_independent(mu_dict=mu, sigma_dict=sigma, N=DEFAULT_N_SAMPLES, seed=42)
+    X = lhs_gaussian_independent(mu_dict=mu, sigma_dict=sigma, N=n_samples, seed=42)
 
 
     # create DataFrame
@@ -133,6 +137,8 @@ if __name__ == "__main__":
     args = parse_args()
     config = read_config_from_yaml(args.config_path)
     save_to = get_save_path(config)
+
+    n_samples = get_n_samples(config)
     n_modes = get_n_modes(config)
     mu, sigma = parse_input_error(config)
 
@@ -140,4 +146,4 @@ if __name__ == "__main__":
         raise FileExistsError(f'{save_to} already exists! Delete it first to proceed.')
 
     else:
-        main(mu, sigma, n_modes, save_to)
+        main(mu, sigma, n_modes, n_samples, save_to)
