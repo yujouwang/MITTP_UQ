@@ -64,7 +64,8 @@ if __name__ == "__main__":
         n_modes = config['rf']['n_modes'],
         save_every_rf = config['rf']['save_every_rf'],
         model_error_on = config['rf']['model_error_on'],
-        disc_error_on = config['rf']['disc_error_on']
+        disc_error_on = config['rf']['disc_error_on'],
+        grf_script = config['rf'].get('grf_script', 'grf_remote.py')
     )
     uq = UqDriver(
         path_config = path_config,
