@@ -83,8 +83,8 @@ class MultiplierBepu:
     def __init__(self, target_quantity, k_l0, s_2, ils_filepath, de_filepath, bepu_input_dict, save_to, model_error_on, disc_error_on, ils_norm=None, cov_form='mean'):
         self.k_l0 = k_l0
         self.s_2 = s_2
-        # ils_norm: None keeps the length scale k_l0 * ILS in meters; a dict
-        # {l_ref, ils_ref, l_min_factor} normalizes it, see get_length_scale()
+        # ils_norm: None keeps the length scale k_l0 * ILS; a dict
+        # {ils_ref, l_min_factor} normalizes it, see get_length_scale()
         self.ils_norm = ils_norm
         # cov_form: 'mean' (arithmetic mean of the pointwise length scales) or
         # 'paciorek' (Paciorek-Schervish, positive semi-definite by construction)
@@ -123,9 +123,6 @@ class MultiplierBepu:
         discretization-error part of the ILS still changes the length scale.
         """
         norm = self.ils_norm
-        assert 'l_ref' in norm, 'ils_norm needs l_ref (m).'
-        self.l_ref = float(norm['l_ref'])
-
         ils_ref = norm.get('ils_ref', 'median')
         if ils_ref == 'median':
             self.ils_ref = float(np.median(self.ils_base))
@@ -138,7 +135,7 @@ class MultiplierBepu:
         # Nearest-neighbour spacing of the RF points, for the length-scale floor
         self.l_min_factor = float(norm.get('l_min_factor', 0.0))
         self.h = cKDTree(self.coord).query(self.coord, k=2)[0][:, 1]
-        logger.info(f'ILS normalization: l_ref={self.l_ref}, ils_ref={self.ils_ref:.4e}, '
+        logger.info(f'ILS normalization: ils_ref={self.ils_ref:.4e}, '
                     f'l_min_factor={self.l_min_factor}')
         return
 
@@ -237,12 +234,12 @@ class MultiplierBepu:
     def get_length_scale(self, ils):
         """Pointwise length scale L_i entering the covariance (u = 2 sqrt(2) r / L).
 
-        Without ils_norm, L_i = k_l0 * ILS_i in meters, as in v0. With ils_norm
-        the ILS only sets the spatial shape and l_ref sets the size:
+        Without ils_norm, L_i = k_l0 * ILS_i, as in v0. With ils_norm the ILS
+        only sets the spatial shape and k_l0 sets the size:
 
-            L_i = k_l0 * l_ref * ILS_i / ils_ref
+            L_i = k_l0 * ILS_i / ils_ref
 
-        so k_l0 is dimensionless (L = k_l0 * l_ref where ILS = ils_ref). L_i is
+        so k_l0 is a length in meters (L = k_l0 where ILS = ils_ref). L_i is
         then floored at l_min_factor * (nearest-neighbour spacing at i), so
         low-ILS regions (near walls) do not fall below the point spacing and
         turn into uncorrelated noise.
@@ -250,7 +247,7 @@ class MultiplierBepu:
         if self.ils_norm is None:
             return self.k_l0 * ils
 
-        L = self.k_l0 * self.l_ref * ils / self.ils_ref
+        L = self.k_l0 * ils / self.ils_ref
         if self.l_min_factor > 0:
             L_min = self.l_min_factor * self.h
             n_floored = int(np.count_nonzero(L < L_min))

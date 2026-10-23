@@ -239,8 +239,7 @@ rf: # control the random field
   disc_error_on: True
   # Optional - omit both to keep the original behaviour (L = k_l0 * ILS, in m)
   # cov_form: paciorek        # 'mean' (default) or 'paciorek' (always a valid covariance)
-  # ils_norm:                 # with this, k_l0 is dimensionless: L = k_l0 * l_ref * ILS / ils_ref
-  #   l_ref: 0.0856           # reference length (m), e.g. channel width
+  # ils_norm:                 # with this, k_l0 is a length (m): L = k_l0 * ILS / ils_ref
   #   ils_ref: median         # 'median' (default), 'mean', or a number (m); from the base ILS
   #   l_min_factor: 3         # floor L at this many nearest-neighbour spacings; 0 = off
 
